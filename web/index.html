@@ -1,0 +1,37 @@
+{% extends "lib/webinterface/fragments/layout.tpl" %}
+{% import "lib/webinterface/fragments/macros.tpl" as macros%}
+{% block head_css %}
+{% include 'lib/webinterface/fragments/select_css.tpl' %}
+{% endblock %}
+
+{% block content %}
+<img id="img-buffer" src="/static/img/logo-100px.png" hidden>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Amazon Alexa<br>
+                    <a class="btn btn-md btn-primary" href="/modules_settings/amazonalexa/devices">Edit Devices</a>
+                    </h1>
+                    <p></p>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>
+                        Amazon Alexa module allows you to control various devices through any authorized Alexa.
+                    </p>
+                    <p>
+                        To get started:
+                    <ul>
+                        <li>Go to the <strong><a href="/modules_settings/amazonalexa/devices">devices section</a></strong>
+                            and mark which devices can be accessed.</li>
+                    </ul>
+                    </p>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+
+{% endblock %}

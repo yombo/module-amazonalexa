@@ -1,0 +1,118 @@
+{% extends "lib/webinterface/fragments/layout.tpl" %}
+{% import "lib/webinterface/fragments/macros.tpl" as macros%}
+{% block head_css %}
+{% include 'lib/webinterface/fragments/select_css.tpl' %}
+{% endblock %}
+
+{% block content %}
+<img id="img-buffer" src="/static/img/logo-100px.png" hidden>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Homebridge<br>
+                    <a class="btn btn-md btn-primary" href="/modules_settings/homebridge/devices">Edit Devices</a>
+                    <a class="btn btn-md btn-danger" href="/modules_settings/homebridge/rotate_username">Rotate Username/Pin</a>
+                    <a class="btn btn-md btn-danger" href="/modules_settings/homebridge/restart_homebridge">Restart Homebridge</a>
+                    </h1>
+                    <p></p>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>
+                        Homebridge allows you to view and control various items through HomeKit on iOS devices.
+                    </p>
+                    <p>
+                        To get started:
+                    <ul>
+                        <li>Go to the <strong><a href="/modules_settings/homebridge/devices">devices section</a></strong>
+                            and mark which devices can be accessed.</li>
+                    <ul>
+                        <li>After editing device configurations,
+                            <strong><a href="/modules_settings/homebridge/restart_homebridge">homebridge must be restarted.</a></strong></li>
+                    </ul>
+                        <li>Scan the barcode below within the HomeKit app on your iOS device.</li>
+                        <ul>
+                            <li>Or enter this code into HomeKit: <strong>{{homebridge.pin_code}}</strong></li>
+                        </ul>
+                    </ul>
+                    </p>
+                    <h2>HomeKit qr code:</h2>
+                    <div class="modal-body" id="qrcode_here">
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+
+{% endblock %}
+
+
+{% block body_bottom %}
+{% include 'lib/webinterface/fragments/qrcode_js.tpl' %}
+
+<script>
+
+	$(document).ready(function(){
+		var jq = window.jQuery;
+		jq('#qrcode_here').empty().qrcode(qroptions);
+
+//		$('#qrcode_here_mitch').html(qrcode(qroptions));
+	});
+	var qroptions = {
+		// render method: 'canvas', 'image' or 'div'
+		render: 'image',
+
+		// version range somewhere in 1 .. 40
+		minVersion: 1,
+		maxVersion: 40,
+
+		// error correction level: 'L', 'M', 'Q' or 'H'
+		ecLevel: 'Q',
+
+		// offset in pixel if drawn onto existing canvas
+		left: 0,
+		top: 0,
+
+		// size in pixel
+		size: 200,
+
+		// code color or image element
+		fill: '#3e7495',
+
+		// background color or image element, null for transparent background
+		background: null,
+
+		// content
+		text: '{{homebridge.qrstring}}',
+
+		// corner radius relative to module width: 0.0 .. 0.5
+		radius: .4,
+
+		// quiet zone in modules
+		quiet: 1,
+
+		// modes
+		// 0: normal
+		// 1: label strip
+		// 2: label box
+		// 3: image strip
+		// 4: image box
+		mode: 4,
+
+		mSize: 0.21,
+		mPosX: 0.5,
+		mPosY: 0.5,
+
+//		label: 'Yombo',
+//		label: '',
+		fontname: 'sans',
+		fontcolor: '#0c4276',
+
+		image: $('#img-buffer')[0]
+	}
+//	$(selector).qrcode(options);
+    </script>
+{% endblock %}
