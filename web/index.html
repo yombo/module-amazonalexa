@@ -6,32 +6,99 @@
 
 {% block content %}
 <img id="img-buffer" src="/static/img/logo-100px.png" hidden>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Amazon Alexa<br>
-                    <a class="btn btn-md btn-primary" href="/modules_settings/amazonalexa/devices">Edit Devices</a>
-                    </h1>
-                    <p></p>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Amazon Alexa<br>
+        </h1>
+        <p></p>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <p>
+            This module provides support for allowing Alexa to access and and control your automation
+            devices and activating scenes. Using the form below, simply select which devices and scenes
+            Amazon Alexa should have access to status and be able to control devices or activate scenes.
+        </p>
+        <p>
+            To update the discovery items for this gateway, simply just click "Update Alexa" below.
+        </p>
+        <form method="post" id="alexadevices">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="devices devices-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                  <ul id="myTab" class="nav nav-tabs nav-tabs-responsive" role="tablist">
+                    <li role="presentation" class="active bg-success">
+                      <a href="#enabled" id="enabled-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">
+                        <span class="text-success">Devices</span>
+                      </a>
+                    </li>
+                    <li role="presentation" class="next bg-success">
+                      <a href="#scenes" id="scenes-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">
+                        <span class="text-success">Scenes</span>
+                      </a>
+                    </li>
+                    <li role="presentation" class="next bg-success">
+                      <a href="#debug" id="debug-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">
+                        <span class="text-success">Debug</span>
+                      </a>
+                    </li>
+                  </ul>
+                  <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="enabled" aria-labelledby="home-tab">
+                        <p>
+                        {%- if _devices|length == 0 or _devicetypes|length == 0 %}
+                            There or devices found, create some before Alexa can control them.
+                        {%- endif %}
+                        {% for device_id, device in _devices.sorted().items() if device.enabled_status == 1%}
+                        <label style="font-weight: 500;"><input name="deviceid_{{device_id}}" type="checkbox" value="1"
+                        {% if device_id in amazonalexa.node.data['devices']['allowed'] %} checked {% endif %}
+                        > {{ device.full_label}}</label><br>
+                        {% endfor %}
+                        </p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="scenes" aria-labelledby="profile-tab">
+                        <p>
+                        {%- if _scenes|length == 0 %}
+                            There or scenes found, create some before Alexa can control them.
+                        {%- endif %}
+                        {% for scene_id, scene in _scenes.get().items() if scene.status == 1 %}
+                        <label style="font-weight: 500;"><input name="sceneid_{{scene_id}}" type="checkbox" value="1"
+                        {% if scene_id in amazonalexa.node.data['scenes']['allowed'] %} checked {% endif %}
+                        > {{ scene.label}}</label><br>
+                        {% endfor %}
+                        </p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="debug" aria-labelledby="profile-tab">
+                        <p>
+                        <pre>{{amazonalexa.node.data['alexa']|json_human}}</pre>
+                        </p>
+                    </div>
+                  </div>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>
-                        Amazon Alexa module allows you to control various devices through any authorized Alexa.
-                    </p>
-                    <p>
-                        To get started:
-                    <ul>
-                        <li>Go to the <strong><a href="/modules_settings/amazonalexa/devices">devices section</a></strong>
-                            and mark which devices can be accessed.</li>
-                    </ul>
-                    </p>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.col-lg-6 -->
-            </div>
-            <!-- /.row -->
+        </div>
+        <input type="hidden" name="json_output" id="json_output" value="">
+        <button class="btn btn-primary btn-lg">Update Alexa</button>
+        </form>
+        <!-- /.panel-body -->
+    </div>
+    <!-- /.col-lg-6 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+{% block body_bottom %}
+{% include 'lib/webinterface/fragments/select_js.tpl' %}
+    <script type="text/javascript" src="/static/js/jquery.serializejson.min.js"></script>
+    <script>
+        $("#alexadevices").submit(function(event) {
+            var rawData = $('#alexadevices').serializeJSON();
+            var formData = JSON.stringify(rawData);
+            $('#json_output').val(formData)
+        });
+    </script>
 
 {% endblock %}
